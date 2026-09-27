@@ -1,2 +1,5 @@
-def main() -> None:
-    print("Hello from mentor-bot!")
+"""Telegram bot for testing theoretical Python knowledge."""
+
+from mentor_bot.main import main
+
+__all__ = ["main"]
