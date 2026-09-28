@@ -1,8 +1,11 @@
+"""Application entry point."""
+
 import asyncio
 import logging
 from typing import Final
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.redis import RedisStorage
 from sqlalchemy import text
 
 from mentor_bot.config import get_settings
@@ -21,23 +24,35 @@ async def check_database_connection() -> None:
     logger.info("PostgreSQL connection OK")
 
 
+async def check_redis_connection(storage: RedisStorage) -> None:
+    """Verify that the application can connect to Redis (FSM storage)."""
+    await storage.redis.ping()
+    logger.info("Redis connection OK")
+
+
 async def run_bot() -> None:
-    """Create Bot/Dispatcher, verify DB, and start long polling."""
+    """Create Bot/Dispatcher with Redis FSM storage and start long polling."""
     settings = get_settings()
     if not settings.BOT_TOKEN:
         msg = "BOT_TOKEN is empty; set it in .env"
         raise RuntimeError(msg)
+    if not settings.REDIS_URL:
+        msg = "REDIS_URL is empty; set it in .env"
+        raise RuntimeError(msg)
 
+    storage = RedisStorage.from_url(settings.REDIS_URL)
     bot = Bot(token=settings.BOT_TOKEN)
-    dispatcher = Dispatcher()
+    dispatcher = Dispatcher(storage=storage)
     dispatcher.include_router(get_root_router())
 
     try:
         await check_database_connection()
+        await check_redis_connection(storage)
         logger.info("[---Starting Telegram polling---]")
         await dispatcher.start_polling(bot)
     finally:
         await bot.session.close()
+        await storage.close()
         await engine.dispose()
         logger.info("[---Bot resources closed---]")
 
@@ -49,7 +64,6 @@ def main() -> None:
         asyncio.run(run_bot())
     except KeyboardInterrupt:
         logger.info("[---Bot stopped by user---]")
-
 
 
 if __name__ == "__main__":
