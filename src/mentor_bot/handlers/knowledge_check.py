@@ -47,8 +47,6 @@ async def process_voice_answer(message: Message, state: FSMContext, bot: Bot) ->
         return
 
     data = await state.get_data()
-    question_text = data.get("question_text", "")
-
     audio_path: Path | None = None
 
     try:
@@ -64,19 +62,43 @@ async def process_voice_answer(message: Message, state: FSMContext, bot: Bot) ->
             await message.answer("Не удалось распознать текст из голосового сообщения. Попробуйте ещё раз.")
             return
 
-        # Show transcribed text
+        # Get question from database
+        question_id = data.get("question_id")
+        if not question_id:
+            await message.answer("Произошла ошибка: вопрос не найден.", reply_markup=build_main_keyboard())
+            await state.clear()
+            return
+
+        async with get_async_session() as session:
+            from mentor_bot.services.question import QuestionService
+
+            question_service = QuestionService(session)
+            question = await question_service.get_question_by_id(question_id)
+
+        if not question:
+            await message.answer(
+                "Произошла ошибка: вопрос не найден в базе данных.", reply_markup=build_main_keyboard()
+            )
+            await state.clear()
+            return
+
+        # Evaluate answer with LLM
+        from mentor_bot.services.llm import LLMService
+
+        llm_service = LLMService(api_key=settings.OPENROUTER_API_KEY, model=settings.OPENROUTER_MODEL)
+        feedback = await llm_service.evaluate_answer(question.text, transcribed_text)
+
+        # Send feedback to user
         await state.clear()
         await message.answer(
-            f"Ваш вопрос:\n{question_text}\n\n"
-            f"Ваш ответ (распознанный текст):\n{transcribed_text}\n\n"
-            "Распознавание завершено успешно!",
+            f"Вопрос:\n{question.text}\n\nВаш ответ:\n{transcribed_text}\n\nАнализ:\n{feedback}",
             reply_markup=build_main_keyboard(),
         )
 
     except Exception as e:
-        logger.error("Error processing voice message: %s", e)
+        logger.error("Error processing voice message: %s", e, exc_info=True)
         await message.answer(
-            "Произошла ошибка при обработке голосового сообщения. Попробуйте ещё раз.",
+            "Произошла ошибка при обработке вашего ответа. Попробуйте ещё раз.",
             reply_markup=build_main_keyboard(),
         )
         await state.clear()

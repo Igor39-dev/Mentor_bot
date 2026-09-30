@@ -18,3 +18,9 @@ class QuestionRepository:
         stmt = select(Question).where(Question.is_active == True).order_by(func.random()).limit(1)  # noqa: E712
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
+
+    async def get_question_by_id(self, question_id: int) -> Question | None:
+        """Get question by ID."""
+        stmt = select(Question).where(Question.id == question_id)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
