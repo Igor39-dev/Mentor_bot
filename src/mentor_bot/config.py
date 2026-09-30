@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     REDIS_URL: str
     OPENROUTER_API_KEY: str
     OPENROUTER_MODEL: str
+    OPENROUTER_STT_MODEL: str
 
 
 @lru_cache
