@@ -5,6 +5,8 @@ import logging
 from typing import Final
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram.fsm.storage.redis import RedisStorage
 from sqlalchemy import text
 
@@ -41,7 +43,9 @@ async def run_bot() -> None:
         raise RuntimeError(msg)
 
     storage = RedisStorage.from_url(settings.REDIS_URL)
-    bot = Bot(token=settings.BOT_TOKEN)
+    
+    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
     dispatcher = Dispatcher(storage=storage)
     dispatcher.include_router(get_root_router())
 
