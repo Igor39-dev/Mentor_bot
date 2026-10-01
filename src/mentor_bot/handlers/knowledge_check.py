@@ -46,6 +46,8 @@ async def process_voice_answer(message: Message, state: FSMContext, bot: Bot) ->
     if not message.voice:
         return
 
+    await message.answer("Обработка ответа....")
+
     data = await state.get_data()
     audio_path: Path | None = None
 
