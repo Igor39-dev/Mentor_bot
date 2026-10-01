@@ -19,3 +19,7 @@ class QuestionService:
     async def get_question_by_id(self, question_id: int) -> Question | None:
         """Get question by ID."""
         return await self.repository.get_question_by_id(question_id)
+
+    async def get_random_active_question_by_category(self, category: str) -> Question | None:
+        """Get a random active question by category."""
+        return await self.repository.get_random_active_question_by_category(category)

@@ -9,7 +9,7 @@ from aiogram.types import Message
 
 from mentor_bot.config import get_settings
 from mentor_bot.db.session import get_async_session
-from mentor_bot.services.keyboard import build_main_keyboard
+from mentor_bot.services.keyboard import CATEGORIES, build_category_keyboard, build_main_keyboard
 from mentor_bot.services.question import QuestionService
 from mentor_bot.services.stt import STTService
 from mentor_bot.services.telegram import download_voice_file
@@ -23,19 +23,30 @@ TEMP_AUDIO_DIR = Path("temp_audio")
 
 @router.message(F.text == "Проверка знаний")
 async def start_knowledge_check(message: Message, state: FSMContext) -> None:
-    """Start knowledge check: get random question and wait for voice answer."""
+    """Start knowledge check: show category selection."""
     await state.clear()
+    await state.set_state(KnowledgeCheckStates.waiting_category_selection)
+    await message.answer("Выберите категорию вопроса:", reply_markup=build_category_keyboard())
+
+
+@router.message(KnowledgeCheckStates.waiting_category_selection, F.text.in_(CATEGORIES))
+async def category_selected(message: Message, state: FSMContext) -> None:
+    """Handle category selection: get random question from selected category."""
+    category = message.text
 
     async with get_async_session() as session:
         question_service = QuestionService(session)
-        question = await question_service.get_random_active_question()
+        question = await question_service.get_random_active_question_by_category(category)
 
     if not question:
-        await message.answer("К сожалению, вопросы пока не загружены в базу данных.")
+        await message.answer(
+            f"К сожалению, в категории '{category}' пока нет вопросов.",
+            reply_markup=build_category_keyboard(),
+        )
         return
 
     await state.set_state(KnowledgeCheckStates.waiting_voice_answer)
-    await state.update_data(question_id=question.id, question_text=question.text)
+    await state.update_data(question_id=question.id, question_text=question.text, category=category)
 
     await message.answer(f"Вопрос:\n\n{question.text}\n\nОтправьте голосовой ответ.")
 
@@ -110,6 +121,12 @@ async def process_voice_answer(message: Message, state: FSMContext, bot: Bot) ->
         if audio_path and audio_path.exists():
             audio_path.unlink()
             logger.info("Deleted temporary audio file: %s", audio_path)
+
+
+@router.message(KnowledgeCheckStates.waiting_category_selection)
+async def invalid_category(message: Message) -> None:
+    """Handle invalid category selection."""
+    await message.answer("Пожалуйста, выберите категорию из предложенных кнопок.", reply_markup=build_category_keyboard())
 
 
 @router.message(KnowledgeCheckStates.waiting_voice_answer)
