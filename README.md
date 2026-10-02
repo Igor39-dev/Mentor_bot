@@ -62,8 +62,8 @@ mentor_bot/
 
 - **Python 3.12**
 - **uv** — управление зависимостями
-- **Aiogram 3.x** — фреймворк для Telegram-ботов
-- **SQLAlchemy 2.x** (async) — ORM для работы с БД
+- **Aiogram 3.31** — фреймворк для Telegram-ботов
+- **SQLAlchemy 2.1** (async) — ORM для работы с БД
 - **asyncpg** — асинхронный драйвер PostgreSQL
 - **PostgreSQL** — основная база данных
 - **Redis** — хранилище FSM-состояний
@@ -182,5 +182,3 @@ uv run python -m mentor_bot
 - `postgres_data` — данные PostgreSQL
 - `redis_data` — данные Redis
 - `./temp_audio` — временные аудио файлы (маппинг с хоста)
-
-
