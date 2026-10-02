@@ -4,13 +4,48 @@ Telegram-бот для проверки теоретических знаний 
 
 ## Описание
 
-Бот позволяет пользователям проверять свои знания по различным темам Python-разработки:
- - Основы Python
- - Базы данных (БД)
- - Django
- - Asyncio
- - FastAPI
- - Pytest
+Бот позволяет пользователям проверять свои знания по различным темам Python-разработки: Основы Python, Базы данных (БД), Django, Asyncio, FastAPI, Pytest
+
+## Структура проекта
+
+```
+mentor_bot/
+├── alembic/                     # Миграции базы данных
+│   ├── versions/                # Версии миграций
+│   ├── env.py                   # Конфигурация Alembic
+│   └── script.py.mako           # Шаблон миграции
+├── scripts/                     # Утилитарные скрипты
+│   └── add_test_questions.py    # Скрипт добавления вопросов
+├── src/
+│   └── mentor_bot/
+│       ├── db/                  # Модели и работа с БД
+│       │   ├── base.py          # Базовая модель
+│       │   ├── models.py        # SQLAlchemy модели
+│       │   └── session.py       # Управление сессиями
+│       ├── handlers/            # Обработчики Telegram
+│       │   ├── start.py         # Команда /start
+│       │   └── knowledge_check.py # Основной флоу проверки знаний
+│       ├── repositories/        # Слой доступа к данным
+│       │   └── question.py      # Репозиторий вопросов
+│       ├── services/            # Бизнес-логика и внешние API
+│       │   ├── keyboard.py      # Клавиатуры бота
+│       │   ├── llm.py           # Интеграция с LLM
+│       │   ├── question.py      # Сервис вопросов
+│       │   ├── start.py         # Сервис приветствия
+│       │   ├── stt.py           # Speech-to-Text сервис
+│       │   └── telegram.py      # Утилиты Telegram
+│       ├── states/              # FSM состояния
+│       │   └── knowledge_check.py # Состояния проверки знаний
+│       ├── config.py            # Конфигурация из .env
+│       ├── main.py              # Точка входа
+│       └── __main__.py          # Запуск как модуль
+├── .env.example                 # Шаблон переменных окружения
+├── .gitignore                   # Git игнорирование
+├── alembic.ini                  # Конфигурация Alembic
+├── docker-compose.yml           # Инфраструктура
+├── pyproject.toml               # Зависимости и настройки
+└── README.md                    # Этот файл
+```                  
 
 
 ### Прицип работы бота
@@ -96,13 +131,7 @@ POSTGRES_PASSWORD=postgres
 Запустите инфраструктуру (PostgreSQL + Redis):
 ```bash
 docker-compose up -d
-```
-
-Установите зависимости:
-
-```bash
-uv sync
-```                  
+```            
 
 Примените миграции:
 ```bash
@@ -114,53 +143,10 @@ uv run alembic upgrade head
 uv run python scripts/add_test_questions.py
 ```
 
-Запустите бота:
+<!-- Запустите бота:
 ```bash
 uv run python -m mentor_bot
-```
-
-## Структура проекта
-
-```
-mentor_bot/
-├── alembic/                     # Миграции базы данных
-│   ├── versions/                # Версии миграций
-│   ├── env.py                   # Конфигурация Alembic
-│   └── script.py.mako           # Шаблон миграции
-├── scripts/                     # Утилитарные скрипты
-│   └── add_test_questions.py    # Скрипт добавления вопросов
-├── src/
-│   └── mentor_bot/
-│       ├── db/                  # Модели и работа с БД
-│       │   ├── base.py          # Базовая модель
-│       │   ├── models.py        # SQLAlchemy модели
-│       │   └── session.py       # Управление сессиями
-│       ├── handlers/            # Обработчики Telegram
-│       │   ├── start.py         # Команда /start
-│       │   └── knowledge_check.py # Основной флоу проверки знаний
-│       ├── repositories/        # Слой доступа к данным
-│       │   └── question.py      # Репозиторий вопросов
-│       ├── services/            # Бизнес-логика и внешние API
-│       │   ├── keyboard.py      # Клавиатуры бота
-│       │   ├── llm.py           # Интеграция с LLM
-│       │   ├── question.py      # Сервис вопросов
-│       │   ├── start.py         # Сервис приветствия
-│       │   ├── stt.py           # Speech-to-Text сервис
-│       │   └── telegram.py      # Утилиты Telegram
-│       ├── states/              # FSM состояния
-│       │   └── knowledge_check.py # Состояния проверки знаний
-│       ├── config.py            # Конфигурация из .env
-│       ├── main.py              # Точка входа
-│       └── __main__.py          # Запуск как модуль
-├── .env.example                 # Шаблон переменных окружения
-├── .gitignore                   # Git игнорирование
-├── ARCHITECTURE.md              # Описание архитектуры
-├── CONVENTIONS.md               # Правила разработки
-├── alembic.ini                  # Конфигурация Alembic
-├── docker-compose.yml           # Инфраструктура
-├── pyproject.toml               # Зависимости и настройки
-└── README.md                    # Этот файл
-```                  
+``` -->
 
 ## Архитектура
 
@@ -189,14 +175,7 @@ mentor_bot/
 
 ## Линтинг и форматирование
 Проект использует **Ruff** для линтинга и форматирования.
-        
-## Docker
 
-### Порты
-
-В `docker-compose.yml` настроены следующие порты:
-- PostgreSQL: `5433:5432` (чтобы не конфликтовать с локальным PostgreSQL)
-- Redis: `6380:6379` (чтобы не конфликтовать с локальным Redis)
 
 ### Volumes
 
@@ -204,47 +183,4 @@ mentor_bot/
 - `redis_data` — данные Redis
 - `./temp_audio` — временные аудио файлы (маппинг с хоста)
 
-### Полезные команды
 
-Пересборка образа бота после изменений в коде:
-```bash
-docker-compose build bot
-```
-
-Перезапуск только бота:
-```bash
-docker-compose restart bot
-```
-
-Остановка всех сервисов:
-```bash
-docker-compose down
-```
-
-Остановка с удалением volumes (очистка всех данных):
-```bash
-docker-compose down -v
-```
-
-Просмотр логов всех сервисов:
-```bash
-docker-compose logs -f
-```
-
-Выполнение команды внутри контейнера бота:
-```bash
-docker-compose exec bot <команда>
-```
-
-### Переменные окружения для Docker
-
-При запуске через Docker Compose переменные `DATABASE_URL` и `REDIS_URL` автоматически переопределяются для использования внутренних Docker-сервисов (`postgres:5432` и `redis:6379`).
-
-Убедитесь, что в `.env` указаны остальные переменные:
-- `BOT_TOKEN`
-- `OPENROUTER_API_KEY`
-- `OPENROUTER_MODEL`
-- `OPENROUTER_STT_MODEL`
-- `POSTGRES_DB`
-- `POSTGRES_USER`
-- `POSTGRES_PASSWORD`
