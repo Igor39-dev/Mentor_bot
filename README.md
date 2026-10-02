@@ -4,6 +4,10 @@ Telegram-бот для проверки теоретических знаний 
 
 Бот позволяет пользователям проверять свои знания по различным темам Python-разработки: Основы Python, Базы данных (БД), Django, Asyncio, FastAPI, Pytest
 
+ТГ-бот: [@PythonMentor_for_me_bot](https://t.me/PythonMentor_for_me_bot)
+
+<img src="image.png" alt="alt text" width="150">
+
 ## Структура проекта
 
 ```
