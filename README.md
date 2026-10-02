@@ -131,22 +131,8 @@ POSTGRES_PASSWORD=postgres
 Запустите инфраструктуру (PostgreSQL + Redis):
 ```bash
 docker-compose up -d
-```            
-
-Примените миграции:
-```bash
-uv run alembic upgrade head
 ```
-
-Добавьте тестовые вопросы:
-```bash                  
-uv run python scripts/add_test_questions.py
-```
-
-<!-- Запустите бота:
-```bash
-uv run python -m mentor_bot
-``` -->
+(Примените миграции, добавление тестового набора вопросов и запуск бота автоматически)
 
 ## Архитектура
 
