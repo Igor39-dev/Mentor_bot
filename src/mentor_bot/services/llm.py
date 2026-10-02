@@ -16,7 +16,7 @@ class LLMService:
             api_key=api_key,
             base_url="https://openrouter.ai/api/v1",
             timeout=60.0,
-            http_client=None,  # Использовать дефолтный httpx клиент
+            http_client=None,
         )
 
     async def evaluate_answer(self, question_text: str, user_answer: str) -> str:
