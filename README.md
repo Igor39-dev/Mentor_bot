@@ -2,8 +2,6 @@
 
 Telegram-бот для проверки теоретических знаний Python-разработчиков через голосовые ответы с анализом через LLM.
 
-## Описание
-
 Бот позволяет пользователям проверять свои знания по различным темам Python-разработки: Основы Python, Базы данных (БД), Django, Asyncio, FastAPI, Pytest
 
 ## Структура проекта
@@ -80,7 +78,7 @@ mentor_bot/
 ### Требования
                   
 - Python 3.12+
-- uv
+- [`uv`](https://docs.astral.sh/uv/)
 - Docker и Docker Compose
 
 
@@ -89,7 +87,9 @@ mentor_bot/
 Клонируйте репозиторий:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Igor39-dev/Mentor_bot
+```
+```bash
 cd mentor_bot
 ```
 
@@ -113,26 +113,26 @@ POSTGRES_PASSWORD=postgres
 
 ## Переменные окружения
 
-| Переменная | Описание | Пример |
-|------------|----------|--------|
-| `BOT_TOKEN` | Токен Telegram-бота | `1234567890:ABCdef...` |
-| `DATABASE_URL` | URL подключения к PostgreSQL | `postgresql+asyncpg://user:pass@host:port/db` |
-| `REDIS_URL` | URL подключения к Redis | `redis://localhost:6379/0` |
-| `OPENROUTER_API_KEY` | API ключ OpenRouter | `sk-or-v1-...` |
-| `OPENROUTER_MODEL` | Модель LLM для анализа ответов | `anthropic/claude-3.5-sonnet` |
-| `OPENROUTER_STT_MODEL` | Модель Speech-to-Text | `openai/whisper-large-v3-turbo` |
-| `POSTGRES_DB` | Имя базы данных PostgreSQL | `python_theory_bot` |
-| `POSTGRES_USER` | Пользователь PostgreSQL | `postgres` |
-| `POSTGRES_PASSWORD` | Пароль PostgreSQL | `postgres` |
+| Переменная             | Описание                       | Пример                                        |
+| ---------------------- | ------------------------------ | --------------------------------------------- |
+| `BOT_TOKEN`            | Токен Telegram-бота            | `1234567890:ABCdef...`                        |
+| `DATABASE_URL`         | URL подключения к PostgreSQL   | `postgresql+asyncpg://user:pass@host:port/db` |
+| `REDIS_URL`            | URL подключения к Redis        | `redis://localhost:6379/0`                    |
+| `OPENROUTER_API_KEY`   | API ключ OpenRouter            | `sk-or-v1-...`                                |
+| `OPENROUTER_MODEL`     | Модель LLM для анализа ответов | `deepseek/deepseek-v4.1-flash`                 |
+| `OPENROUTER_STT_MODEL` | Модель Speech-to-Text          | `openai/whisper-large-v3-turbo`               |
+| `POSTGRES_DB`          | Имя базы данных PostgreSQL     | `python_theory_bot`                           |
+| `POSTGRES_USER`        | Пользователь PostgreSQL        | `postgres`                                    |
+| `POSTGRES_PASSWORD`    | Пароль PostgreSQL              | `postgres`                                    |
 
 
 ### Запуск через Docker Compose
 
-Запустите инфраструктуру (PostgreSQL + Redis):
+Запустите инфраструктуру (PostgreSQL + Redis + Bot):
 ```bash
 docker-compose up -d
 ```
-(Примените миграции, добавление тестового набора вопросов и запуск бота автоматически)
+(Применение миграции, добавление тестового набора вопросов и запуск бота автоматически)
 
 ## Архитектура
 

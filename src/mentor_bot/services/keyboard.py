@@ -1,6 +1,7 @@
 """Keyboard builders for bot UI."""
 
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 CATEGORIES = [
     "Основы Python",
@@ -20,5 +21,9 @@ def build_main_keyboard() -> ReplyKeyboardMarkup:
 
 def build_category_keyboard() -> ReplyKeyboardMarkup:
     """Build keyboard with question categories."""
-    keyboard = [[KeyboardButton(text=category)] for category in CATEGORIES]
-    return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
+    builder = ReplyKeyboardBuilder()
+    for category in CATEGORIES:
+        builder.add(KeyboardButton(text=category))
+    
+    builder.adjust(2) 
+    return builder.as_markup(resize_keyboard=True)
