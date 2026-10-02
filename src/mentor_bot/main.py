@@ -43,7 +43,7 @@ async def run_bot() -> None:
         raise RuntimeError(msg)
 
     storage = RedisStorage.from_url(settings.REDIS_URL)
-    
+
     bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     dispatcher = Dispatcher(storage=storage)

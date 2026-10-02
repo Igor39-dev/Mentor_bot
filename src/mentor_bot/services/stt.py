@@ -30,7 +30,7 @@ class STTService:
         Raises:
             httpx.HTTPError: If API request fails
         """
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, verify=True) as client:
             with audio_path.open("rb") as audio_file:
                 files = {"file": (audio_path.name, audio_file, "audio/ogg")}
                 data = {"model": self.model}
