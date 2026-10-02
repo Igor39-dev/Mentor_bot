@@ -126,7 +126,10 @@ async def process_voice_answer(message: Message, state: FSMContext, bot: Bot) ->
 @router.message(KnowledgeCheckStates.waiting_category_selection)
 async def invalid_category(message: Message) -> None:
     """Handle invalid category selection."""
-    await message.answer("Пожалуйста, выберите категорию из предложенных кнопок.", reply_markup=build_category_keyboard())
+    await message.answer(
+        "Пожалуйста, выберите категорию из предложенных кнопок.",
+        reply_markup=build_category_keyboard(),
+    )
 
 
 @router.message(KnowledgeCheckStates.waiting_voice_answer)

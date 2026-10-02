@@ -3,6 +3,8 @@ services:
     image: postgres:16
     container_name: python_theory_bot_postgres
     restart: unless-stopped
+    networks:
+      - bot_network
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -21,6 +23,8 @@ services:
     image: redis:7-alpine
     container_name: python_theory_bot_redis
     restart: unless-stopped
+    networks:
+      - bot_network
     ports:
       - "6380:6379"
     volumes:
@@ -37,6 +41,8 @@ services:
       dockerfile: Dockerfile
     container_name: python_theory_bot
     restart: unless-stopped
+    networks:
+      - bot_network
     env_file:
       - .env
     environment:
@@ -49,6 +55,10 @@ services:
         condition: service_healthy
     volumes:
       - ./temp_audio:/app/temp_audio
+
+networks:                                                                                                                                                                    
+  bot_network:                                                                                                                                                               
+    driver: bridge
 
 volumes:
   postgres_data:

@@ -18,5 +18,12 @@ RUN uv sync --frozen --no-dev
 # Создание директории для временных аудио файлов
 RUN mkdir -p temp_audio
 
-# Запуск приложения
-CMD ["uv", "run", "python", "-m", "mentor_bot"]
+# Копирование скриптов
+COPY scripts ./scripts
+COPY entrypoint.sh ./
+
+# Установка прав на выполнение для entrypoint
+RUN chmod +x entrypoint.sh
+
+# Запуск через entrypoint
+ENTRYPOINT ["./entrypoint.sh"]
