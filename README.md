@@ -80,6 +80,7 @@ mentor_bot/
 - Python 3.12+
 - [`uv`](https://docs.astral.sh/uv/)
 - Docker и Docker Compose
+- [openrouter.ai](https://openrouter.ai/models) (API)
 
 
 ### Настройка окружения
